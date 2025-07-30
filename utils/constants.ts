@@ -1,18 +1,17 @@
+import { SecureCredentials } from './secure-credentials';
+
 export const APP_CONFIG = {
-  BASE_URL: 'https://ui.am.drax.dev/',
-  LOGIN_URL: 'https://keycloak.am.drax.dev/realms/asset-management/protocol/openid-connect/auth',
+  BASE_URL: process.env.BASE_URL || 'https://ui.am.drax.dev/',
+  LOGIN_URL: process.env.LOGIN_URL || 'https://keycloak.am.drax.dev/realms/asset-management/protocol/openid-connect/auth',
   TIMEOUT: {
-    DEFAULT: 60000,
-    NAVIGATION: 90000,
-    SHORT: 10000
+    DEFAULT: parseInt(process.env.TIMEOUT || '60000'),
+    NAVIGATION: parseInt(process.env.NAVIGATION_TIMEOUT || '90000'),
+    SHORT: parseInt(process.env.SHORT_TIMEOUT || '10000')
   }
 } as const;
 
 export const USER_CREDENTIALS = {
-  OPERATOR: {
-    email: 'qa-op@hydrax.io',
-    password: 'hXadmin@2018'
-  }
+  OPERATOR: SecureCredentials.getOperatorCredentials()
 } as const;
 
 export const CLIENT_CONFIG = {
