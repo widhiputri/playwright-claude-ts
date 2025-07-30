@@ -1,31 +1,26 @@
 # Playwright Test Suite for Asset Management System
 
-This repository contains comprehensive Playwright tests for the Asset Management System's client and entity management features.
+Research project exploring Claude-based MCP integration with Playwright using TypeScript. Focused on evaluating AI-assisted E2E test generation, prompt structure, and real-time test scripting via Claude and VS Code Copilot.
 
 ## Test Coverage
 
 The test suite covers the following scenarios:
 
-### 1. Complete Client and Entity Creation Workflow
-- **Login**: Authenticate as an operator user
-- **Navigation**: Access Account Management through the application UI
-- **Client Management**:
-  - Generate unique client names using timestamps
-  - Check for existing clients
-  - Create new clients with type "Intermediary"
-  - Verify client creation and table display
-- **Entity Management**:
-  - Switch to Entities tab
-  - Create new entities linked to clients
-  - Fill mandatory fields (Name, Client, Type: Corporate, Remarks)
-  - Verify entity creation and status ("Under Review")
+### 1. Complete Resource Creation Workflow
+- **Login**: User authentication
+- **Navigation**: Access platform through the application UI
+- **Resource Management**:
+  - Generate unique resource names using timestamps
+  - Check for existing resources
+  - Create new resources with specific type
+  - Verify resource creation and table display
 
-### 2. Existing Client Handling
-- Test duplicate client detection
-- Verify client existence checks work correctly
+### 2. Existing resource Handling
+- Test duplicate resource detection
+- Verify resource existence checks work correctly
 
 ### 3. Form Validation
-- Test mandatory field validation for entity creation
+- Test mandatory field validation for resource creation
 - Verify error handling and form behavior
 
 ## Project Structure
@@ -33,22 +28,20 @@ The test suite covers the following scenarios:
 ```
 playwright-claude-ts/
 ├── features/
-│   ├── client-entity-management.feature    # Gherkin feature definitions
+│   ├── resource-management.feature         # Gherkin feature definitions
 │   └── steps/
-│       └── client-entity-management.ts     # Step implementations
+│       └── resource-management.ts          # Step implementations
 ├── helpers/
 │   ├── login-helper.ts                     # Login functionality
-│   ├── navigation-helper.ts                # Navigation helpers
-│   ├── client-helper.ts                    # Client management helpers
-│   └── entity-helper.ts                    # Entity management helpers
+│   └── navigation-helper.ts                # Navigation helpers
 ├── utils/
 │   ├── constants.ts                        # Application constants and selectors
 │   └── test-data-generator.ts              # Test data generation utilities
 ├── support/
-│   └── hooks.ts                           # Cucumber hooks and browser setup
-├── reports/                               # Test reports
-├── screenshots/                           # Failure screenshots
-└── package.json                          # Dependencies and scripts
+│   └── hooks.ts                            # Cucumber hooks and browser setup
+├── reports/                                # Test reports
+├── screenshots/                            # Failure screenshots
+└── package.json                            # Dependencies and scripts
 ```
 
 ## Key Features
@@ -98,8 +91,8 @@ playwright-claude-ts/
 ## Example Test Run Output
 
 ```
-✓ Create a new client and entity with unique timestamp names
-✓ Verify existing client handling  
+✓ Create a new resource and entity with unique timestamp names
+✓ Verify existing resource handling  
 ✓ Handle mandatory field validation for entity creation
 
 3 scenarios (3 passed)
