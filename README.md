@@ -92,8 +92,6 @@ playwright-claude-ts/
 - Reports generated in HTML format
 
 ## Test Environment
-- **Application URL**: https://ui.am.drax.dev/
-- **Test User**: qa-op@hydrax.io
 - **Authentication**: OAuth2 through Keycloak
 - **Browser**: Chromium (configurable)
 
