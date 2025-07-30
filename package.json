@@ -5,7 +5,8 @@
   "scripts": {
     "test": "npx cucumber-js",
     "test:headed": "npx cucumber-js --config cucumber.headed.js",
-    "test:debug": "npx cucumber-js --config cucumber.debug.js"
+    "test:debug": "npx cucumber-js --config cucumber.debug.js",
+    "encrypt-credentials": "npx ts-node scripts/encrypt-credentials.ts"
   },
   "keywords": [],
   "author": "",
@@ -13,12 +14,15 @@
   "description": "",
   "devDependencies": {
     "@cucumber/cucumber": "^12.1.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^24.1.0",
     "playwright": "^1.54.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@playwright/test": "^1.54.1"
+    "@playwright/test": "^1.54.1",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.2.1"
   }
 }
