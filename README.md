@@ -111,3 +111,77 @@ The tests follow the Copilot Instructions guidelines for:
 - Semantic locator usage
 - TypeScript best practices
 - Proper error handling and reporting
+- 
+## Setup and Configuration
+
+### Prerequisites
+
+- Node.js 16+ installed
+- - npm or yarn package manager
+ 
+  - ### Installation
+ 
+  - 1. **Clone the repository**
+    2.    ```bash
+             git clone https://github.com/widhiputri/playwright-claude-ts.git
+             cd playwright-claude-ts
+             ```
+
+          2. **Install dependencies**
+          3.    ```bash
+                   npm install
+                   ```
+
+                3. **Configure environment variables**
+                4.    ```bash
+                         # Copy the example file
+                         cp .env.example .env
+
+                         # Edit with YOUR test environment details
+                         # DO NOT commit .env to version control
+                         nano .env
+                         ```
+
+                      4. **Run tests**
+                      5.    ```bash
+                               npm test
+                               ```
+
+                            ### Environment Variables
+
+                        Configure these in your `.env` file:
+
+                  - **BASE_URL**: Your test application UI URL (e.g., `https://your-app.com`)
+                  - - **LOGIN_URL**: Your OAuth2/authentication server URL
+                    - - **TEST_USER_EMAIL**: Test user email (use a dedicated test account, not production)
+                      - - **TEST_USER_PASSWORD**: Test user password
+                       
+                        - See `.env.example` for all available options.
+                       
+                        - ### Running Tests
+                       
+                        - ```bash
+                          # Run all tests in headless mode
+                          npm test
+
+                          # Run tests with visible browser
+                          npm run test:headed
+
+                          # Run specific test with debug tags
+                          npm run test:debug
+
+                          # Run tests with HTML report
+                          npm run test:report
+                          ```
+
+                          ## Security Guidelines
+
+                          **IMPORTANT**: Never commit sensitive information to version control!
+
+                          - Always use `.env` for local configuration
+                          - - Never hardcode credentials or URLs in code
+                            - - Use GitHub Secrets for CI/CD pipelines
+                              - - Review [SECURITY.md](./SECURITY.md) for detailed security policies
+                               
+                                - For more information, see [SECURITY.md](./SECURITY.md)
+                                - 
