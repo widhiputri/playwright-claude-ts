@@ -1,62 +1,41 @@
-import * as CryptoJS from 'crypto-js';
-import * as dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
-
 /**
- * Simple encryption/decryption utility for sensitive data
+ * Secure Credentials Management
+ * 
+ * This module handles retrieval of test credentials from environment variables.
+ * IMPORTANT: Never hardcode credentials in this file!
+ * 
+ * Environment variables required:
+ * - TEST_USER_EMAIL: Email for test user authentication
+ * - TEST_USER_PASSWORD: Password for test user authentication
+ * 
+ * Setup:
+ * 1. Copy .env.example to .env
+ * 2. Configure TEST_USER_EMAIL and TEST_USER_PASSWORD with your test credentials
+ * 3. Never commit .env file to version control
  */
+
 class SecureCredentials {
-  private static readonly ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-key-change-me';
-
-  /**
-   * Encrypts a string using AES encryption
-   */
-  static encrypt(text: string): string {
-    return CryptoJS.AES.encrypt(text, this.ENCRYPTION_KEY).toString();
-  }
-
-  /**
-   * Decrypts an encrypted string
-   */
-  static decrypt(encryptedText: string): string {
-    const bytes = CryptoJS.AES.decrypt(encryptedText, this.ENCRYPTION_KEY);
-    return bytes.toString(CryptoJS.enc.Utf8);
-  }
-
-  /**
-   * Gets credentials from environment variables or encrypted fallback
-   */
+    /**
+     * Gets operator credentials from environment variables
+     * Throws error if credentials are not properly configured
+     */
   static getOperatorCredentials(): { email: string; password: string } {
-    // Priority 1: Environment variables (most secure)
-    if (process.env.TEST_USER_EMAIL && process.env.TEST_USER_PASSWORD) {
-      return {
-        email: process.env.TEST_USER_EMAIL,
-        password: process.env.TEST_USER_PASSWORD
-      };
-    }
+        const email = process.env.TEST_USER_EMAIL;
+        const password = process.env.TEST_USER_PASSWORD;
 
-    // Priority 2: Encrypted fallback (if env vars not available)
-    const encryptedCredentials = {
-      // These are encrypted versions generated with npm run encrypt-credentials
-      email: 'U2FsdGVkX19f3uQClDA+9V2QgBcHGWphfGoILrp2gxk=',
-      password: 'U2FsdGVkX18Sfu8tS0uOV395565rElY7VR2x/34BtaA='
-    };
+      if (!email || !password) {
+              throw new Error(
+                        'TEST_USER_EMAIL and TEST_USER_PASSWORD environment variables are required.\n' +
+                        'Please configure your .env file:\n' +
+                        '1. Copy .env.example to .env\n' +
+                        '2. Set TEST_USER_EMAIL=your-test-email@example.com\n' +
+                        '3. Set TEST_USER_PASSWORD=your-test-password\n' +
+                        '4. Never commit .env to version control\n\n' +
+                        'For more information, see SECURITY.md'
+                      );
+      }
 
-    try {
-      return {
-        email: this.decrypt(encryptedCredentials.email),
-        password: this.decrypt(encryptedCredentials.password)
-      };
-    } catch (error) {
-      console.warn('Failed to decrypt credentials, using fallback');
-      // Priority 3: Fallback for development (least secure)
-      return {
-        email: 'test-user@example.com',
-        password: 'test-password'
-      };
-    }
+      return { email, password };
   }
 }
 
