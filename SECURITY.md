@@ -1,139 +1,115 @@
-# Security Guide
+# Security Policy
 
-This guide explains how to securely manage credentials in your Playwright test suite.
+## Reporting Security Vulnerabilities
 
-## 🔐 Security Options (Recommended Order)
+If you discover a security vulnerability in this repository, please do **not** open a public GitHub issue. Instead, please report it responsibly to the maintainers.
 
-### 1. Environment Variables (Most Secure)
-Create a `.env` file in the project root:
+## Security Best Practices
 
-```bash
-# Copy .env.example to .env and update with your values
-cp .env.example .env
-```
+### 1. Environment Configuration
 
-Add your credentials to `.env`:
-```env
-TEST_USER_EMAIL=your-email@example.com
-TEST_USER_PASSWORD=your-password
-ENCRYPTION_KEY=your-secret-key-here
-```
+**CRITICAL:** Never commit `.env` files or credentials to version control.
 
-### 2. Encrypted Credentials (Fallback)
-If environment variables aren't available, use encrypted storage:
-
-```bash
-# Run the encryption tool
-npm run encrypt-credentials
-```
-
-This will:
-- Prompt for your credentials
-- Generate encrypted versions
-- Show you how to update `secure-credentials.ts`
-
-### 3. CI/CD Integration
-For continuous integration, set environment variables in your CI system:
-
-**GitHub Actions:**
-```yaml
-env:
-  TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-  TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-  ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-```
-
-**Azure DevOps:**
-```yaml
-variables:
-  TEST_USER_EMAIL: $(TEST_USER_EMAIL)
-  TEST_USER_PASSWORD: $(TEST_USER_PASSWORD)
-```
-
-## 🛡️ Security Features
-
-### Multi-Layer Security
-1. **Environment Variables** - Primary method
-2. **AES Encryption** - Fallback with key
-3. **Obfuscated Fallback** - Development only
-
-### Key Rotation
-```bash
-# Generate new encryption key
-ENCRYPTION_KEY=$(openssl rand -hex 32)
-
-# Re-encrypt credentials with new key
-npm run encrypt-credentials
-```
-
-### Best Practices
-
-#### ✅ Do:
-- Use environment variables in production
-- Keep encryption keys secret
-- Rotate credentials regularly
-- Use different credentials for different environments
-- Set up proper CI/CD secrets management
-
-#### ❌ Don't:
-- Commit `.env` files to git
-- Hardcode credentials in source code
-- Share encryption keys in chat/email
-- Use production credentials for testing
-- Store credentials in screenshots/logs
-
-## 🔧 Implementation
-
-### Current Implementation:
-```typescript
-// utils/secure-credentials.ts
-const credentials = SecureCredentials.getOperatorCredentials();
-
-// Priority:
-// 1. Environment variables (TEST_USER_EMAIL, TEST_USER_PASSWORD)
-// 2. Encrypted fallback values
-// 3. Safe defaults for development
-```
-
-### Usage in Tests:
-```typescript
-import { USER_CREDENTIALS } from '../utils/constants';
-
-// Automatically uses the most secure available method
-await page.fill('[name="email"]', USER_CREDENTIALS.OPERATOR.email);
-await page.fill('[name="password"]', USER_CREDENTIALS.OPERATOR.password);
-```
-
-## 🚨 Emergency Response
-
-If credentials are compromised:
-
-1. **Immediate Actions:**
-   ```bash
-   # Change passwords in the application
-   # Revoke API tokens
-   # Update environment variables
-   # Re-encrypt with new key
-   ```
-
-2. **Update Test Suite:**
-   ```bash
-   # Update .env file
-   # Re-run encryption tool
-   # Update CI/CD secrets
-   # Test with new credentials
-   ```
-
-## 📋 Security Checklist
-
-- [ ] `.env` files are in `.gitignore`
-- [ ] No hardcoded credentials in source code
-- [ ] Environment variables set in CI/CD
-- [ ] Encryption key is secret and secure
-- [ ] Different credentials for different environments
-- [ ] Regular credential rotation schedule
-- [ ] Security review completed
-
----
-
-**Remember:** Security is everyone's responsibility. When in doubt, choose the more secure option.
+- Copy `.env.example` to `.env` locally
+- - Configure with YOUR test environment details
+  - - Keep `.env` in your `.gitignore` (already configured)
+    - - Never share `.env` files in public channels or repositories
+     
+      - ### 2. Test Credentials
+     
+      - - **Use a dedicated test account** - Never use production credentials
+        - - **Rotate test credentials regularly** - Replace expired or compromised credentials
+          - - **Configure via environment variables only**:
+            -   ```bash
+                  TEST_USER_EMAIL=your-test-email@your-domain.com
+                  TEST_USER_PASSWORD=your-secure-password
+                  ```
+                - Do not hardcode credentials in code, comments, or configuration files
+             
+                - ### 3. Application URLs
+             
+                - - All application URLs (BASE_URL, LOGIN_URL) must be configured via environment variables
+                  - - Example placeholders are provided in `.env.example`
+                    - - Configure these with YOUR test environment URLs
+                      - - Internal URLs like `ui.am.drax.dev` should not appear in code
+                       
+                        - ### 4. Safe Code Practices
+                       
+                        - - ✅ **DO**: Store sensitive data in environment variables
+                          - - ✅ **DO**: Use `.env.example` for placeholder values only
+                            - - ✅ **DO**: Add `.env` to `.gitignore`
+                              - - ✅ **DO**: Review changes before committing
+                                - - ✅ **DO**: Rotate credentials if accidentally exposed
+                                 
+                                  - - ❌ **DON'T**: Commit `.env` files
+                                    - - ❌ **DON'T**: Hardcode URLs or credentials
+                                      - - ❌ **DON'T**: Share test credentials in issues or discussions
+                                        - - ❌ **DON'T**: Use production credentials in tests
+                                         
+                                          - ### 5. CI/CD Pipeline Security
+                                         
+                                          - For automated testing in CI/CD pipelines (GitHub Actions, Jenkins, etc.):
+                                         
+                                          - - **GitHub Actions**: Use [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+                                            -   ```yaml
+                                                  - name: Run tests
+                                                    env:
+                                                      BASE_URL: ${{ secrets.BASE_URL }}
+                                                      LOGIN_URL: ${{ secrets.LOGIN_URL }}
+                                                      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+                                                      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+                                                    run: npm test
+                                                  ```
+                                                - **Other CI/CD systems**: Use your platform's built-in secrets management
+                                                - - Never log or echo sensitive variables
+                                                  - - Ensure sensitive output is masked in build logs
+                                                   
+                                                    - ### 6. Dependency Security
+                                                   
+                                                    - - Regularly update dependencies: `npm install --save`
+                                                      - - Check for vulnerabilities: `npm audit`
+                                                        - - Review dependency changes in pull requests
+                                                          - - Use lock files (`package-lock.json`) for reproducible builds
+                                                           
+                                                            - ### 7. Code Review Guidelines
+                                                           
+                                                            - Before committing, ensure:
+                                                           
+                                                            - - [ ] No `.env` files are staged
+                                                              - [ ] - [ ] No hardcoded credentials in code
+                                                              - [ ] - [ ] No sensitive URLs revealed
+                                                              - [ ] - [ ] Environment variables are used instead
+                                                              - [ ] - [ ] `.gitignore` is properly configured
+                                                              - [ ] - [ ] No sensitive data in comments
+                                                             
+                                                              - [ ] ### 8. If Credentials Are Accidentally Exposed
+                                                             
+                                                              - [ ] If you commit sensitive data:
+                                                             
+                                                              - [ ] 1. **Immediately rotate the credentials** - Invalidate test accounts and regenerate access tokens
+                                                              - [ ] 2. **Remove from git history** - Use `git filter-repo`:
+                                                              - [ ]    ```bash
+                                                              - [ ]       git filter-repo --path .env --invert-paths
+                                                              - [ ]      git push origin --force --all
+                                                              - [ ]     ```
+                                                              - [ ] 3. **Inform the maintainers** - Report the incident for audit purposes
+                                                             
+                                                              - [ ] ## Security Scanning
+                                                             
+                                                              - [ ] This repository uses:
+                                                             
+                                                              - [ ] - Git `.gitignore` to prevent accidental credential commits
+                                                              - [ ] - Environment variable validation in code (errors thrown if required vars missing)
+                                                              - [ ] - No encryption of credentials in code (environment variables only)
+                                                             
+                                                              - [ ] ## Additional Resources
+                                                             
+                                                              - [ ] - [OWASP - Environment Variables](https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html)
+                                                              - [ ] - [GitHub - Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+                                                              - [ ] - [npm - Security Advisories](https://www.npmjs.com/advisories)
+                                                              - [ ] - [Playwright - Best Practices](https://playwright.dev/docs/best-practices)
+                                                             
+                                                              - [ ] ## Questions?
+                                                             
+                                                              - [ ] If you have security questions, please contact the maintainers directly rather than opening public issues.
+                                                              - [ ] 
